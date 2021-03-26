@@ -1,0 +1,24 @@
+{ 
+  "en": {
+      "greeting": "Welcome to Calculator.",
+      "firstNumber": "What is the first number?",
+      "notANumber": "Hmm... that doesn't look like a valid number.",
+      "secondNumber": "What is the second number?",
+      "operation": "What operation would you like to perform?",
+      "operationChoices": "1) Add 2) Subtract 3) Multiply 4) Divide",
+      "result": "The result is",
+      "keepGoing": "Do another computation? Y / N",
+      "goodbye": "Goodbye"
+      },  
+  "cn": {
+      "greeting": "你好",
+      "firstNumber": "What is the first number?",
+      "notANumber": "Hmm... that doesn't look like a valid number.",
+      "secondNumber": "What is the second number?",
+      "operation": "What operation would you like to perform?",
+      "operationChoices": "1) Add 2) Subtract 3) Multiply 4) Divide",
+      "result": "The result is",
+      "keepGoing": "Do another computation? Y / N",
+      "goodbye": "再見"
+    }
+}

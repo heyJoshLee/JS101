@@ -1,3 +1,6 @@
+const MESSAGES = require("./calculator_messages.json");
+const readline = require("readline-sync");
+
 function prompt(message) {
   console.log(`=> ${message}`);
 }
@@ -6,57 +9,75 @@ function invalidNumber(number) {
   return number.trimStart() === '' || Number.isNaN(Number(number));
 }
 
+let language = "en"
 
-const readline = require("readline-sync");
+language = readline.question("Language: 1) EN 2)CN ");
 
-prompt("Welcome to Calculator");
+while (!["en", "cn"].includes(language.toLowerCase())) {
+  console.log("Please select a language");
+  language = readline.question("Language: 1) EN 2)CN ");
+} 
 
-prompt("What is the first number?");
-let firstNumber = readline.question();
+let keepGoing = true;
+do {
+  prompt(MESSAGES[language]["greeting"]);
 
-while (invalidNumber(firstNumber)) {
-  prompt("Hmm... that doesn't look like a valid number.");
-  firstNumber = readline.question();
-}
+  prompt(MESSAGES[language]["firstNumber"]);
+  let firstNumber = readline.question();
 
-
-prompt("What is the second number?");
-let secondNumber = readline.question();
-
-
-while (invalidNumber(secondNumber)) {
-  prompt("Hmm... that doesn't look like a valid number.");
-  secondNumber = readline.question();
-}
+  while (invalidNumber(firstNumber)) {
+    prompt(MESSAGES[language]["notANumber"]);
+    firstNumber = readline.question();
+  }
 
 
-prompt("What operation would you like to perform?");
-console.log("1) Add 2) Subtract 3) Multiply 4) Divide");
-let operation = readline.question();
+  prompt(MESSAGES[language]["secondNumber"]);
+  let secondNumber = readline.question();
 
 
-while (!['1', '2', '3', '4'].includes(operation)) {
-  prompt("Must choose 1, 2, 3 or 4.");
-  operation = readline.question();
-}
+  while (invalidNumber(secondNumber)) {
+    prompt(MESSAGES[language]["notANumber"]);
+    secondNumber = readline.question();
+  }
 
 
-let output;
-switch (operation) {
-  case "1":
-    output = Number(firstNumber) + Number(secondNumber);
-    break;
-  case "2":
-    output = Number(firstNumber) - Number(secondNumber);
-    break;
-  case "3":
-    output = Number(firstNumber) * Number(secondNumber);
-    break;
-  case "4":
-    output = Number(firstNumber) / Number(secondNumber);
-    break;
-}
+  prompt(MESSAGES["operation"]);
+  console.log(MESSAGES[language]["operationChoices"]);
+  let operation = readline.question();
 
 
-console.log(`The result is ${output}`);
+  while (!['1', '2', '3', '4'].includes(operation)) {
+    prompt("Must choose 1, 2, 3 or 4.");
+    operation = readline.question();
+  }
 
+
+  let output;
+  switch (operation) {
+    case "1":
+      output = Number(firstNumber) + Number(secondNumber);
+      break;
+    case "2":
+      output = Number(firstNumber) - Number(secondNumber);
+      break;
+    case "3":
+      output = Number(firstNumber) * Number(secondNumber);
+      break;
+    case "4":
+      output = Number(firstNumber) / Number(secondNumber);
+      break;
+  }
+
+
+  console.log(MESSAGES[language]["result"] + " " + output);
+  console.log(`===========`);
+
+  let checkKeepGoing = readline.question(MESSAGES[language]["keepGoing"]).toLowerCase();
+
+  if (checkKeepGoing !== "y") {
+    keepGoing = false;
+  }
+
+} while (keepGoing);
+
+console.log(MESSAGES[language]["goodbye"]);
