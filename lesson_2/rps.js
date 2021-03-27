@@ -1,12 +1,16 @@
 const readline = require("readline-sync");
 const VALID_CHOICES = ["rock", "paper", "scissors", "lizard", "spock"];
 const VALID_INPUTS = ['r', 'p', 's', 'l', 'k'];
+const NUM_TO_WIN = 5;
 
+
+let playerPoints = 0;
+let computerPoints = 0;
+let round = 0;
 function prompt(message) {
   console.log(`=> ${message}`);
 }
 
-// returns the name of the winner as a string or tie: player, computer, tie
 function returnWinner(choice, computerChoice) {
 
   if ((choice === 'rock' && (computerChoice === 'scissors' || computerChoice === 'lizard')) ||
@@ -57,26 +61,29 @@ function getComputerChoice() {
   return VALID_CHOICES[randomIndex];
 }
 
-let playerPoints = 0;
-let computerPoints = 0;
-let round = 0;
+function displayValidChoices () {
+  prompt('Choose one:');
+  for (let idx = 0; idx < VALID_CHOICES.length; idx++) {
+    console.log(`Type ${VALID_INPUTS[idx]} for ${VALID_CHOICES[idx]}`);
+  }
+}
+
+function displayRoundInformation(roundNumber) {
+  console.log("-------");
+  console.log(`Round ${roundNumber}`);
+  console.log("-------");
+}
 
 displayStartingMessage();
 
 
 while (true) {
   round += 1;
-  console.log("-------");
-  console.log(`Round ${round}`);
-  console.log("-------");
+  displayRoundInformation(round);
 
-  prompt('Choose one:');
-  for (let i = 0; i < VALID_CHOICES.length; i++) {
-    console.log(`Type ${VALID_INPUTS[i]} for ${VALID_CHOICES[i]}`);
-  }
+  displayValidChoices();
 
   let input = readline.question();
-
   let choice = VALID_CHOICES[VALID_INPUTS.indexOf(input)];
 
   while (!VALID_CHOICES.includes(choice)) {
@@ -87,7 +94,6 @@ while (true) {
 
   let computerChoice = getComputerChoice();
 
-  // Winning logic
   prompt(`You chose ${choice}, computer chose ${computerChoice}.`);
   let winner = returnWinner(choice, computerChoice);
 
@@ -96,8 +102,7 @@ while (true) {
   console.log(`Player points: ${playerPoints}`);
   console.log(`Computer points: ${computerPoints}`);
 
-  // Break after someone gets 5 points
-  if (playerPoints > 4 || computerPoints > 4) break;
+  if (playerPoints === NUM_TO_WIN || computerPoints === NUM_TO_WIN) break;
 }
 
 displayWinnerMessage(playerPoints, computerPoints);
