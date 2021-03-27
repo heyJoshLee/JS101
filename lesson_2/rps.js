@@ -81,7 +81,7 @@ while (true) {
 
   while (!VALID_CHOICES.includes(choice)) {
     prompt("That is not a valid choice");
-    input = readline.question()  
+    input = readline.question();
     choice = VALID_CHOICES[VALID_INPUTS.indexOf(input)];
   }
 
