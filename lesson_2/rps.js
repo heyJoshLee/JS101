@@ -1,46 +1,102 @@
 const readline = require("readline-sync");
-const VALID_CHOICES = ["rock", "paper", "scissors"];
+const VALID_CHOICES = ["rock", "paper", "scissors", "lizard", "spock"];
+const VALID_INPUTS = ['r', 'p', 's', 'l', 'k'];
 
 function prompt(message) {
   console.log(`=> ${message}`);
 }
 
-function displayWinner(choice, computerChoice) {
-  prompt(`You chose ${choice}, computer chose ${computerChoice}.`);
+// returns the name of the winner as a string or tie: player, computer, tie
+function returnWinner(choice, computerChoice) {
 
-  if ((choice === 'rock' && computerChoice === 'scissors') ||
-      (choice === 'paper' && computerChoice === 'rock') ||
-      (choice === 'scissors' && computerChoice === 'paper')) {
-    prompt('You win!');
-  } else if ((choice === 'rock' && computerChoice === 'paper') ||
-             (choice === 'paper' && computerChoice === 'scissors') ||
-             (choice === 'scissors' && computerChoice === 'rock')) {
-    prompt('Computer wins!');
+  if ((choice === 'rock' && (computerChoice === 'scissors' || computerChoice === 'lizard')) ||
+      (choice === 'paper' && (computerChoice === 'rock' || computerChoice === 'spock') ) ||
+      (choice === 'scissors' && (computerChoice === 'paper' || computerChoice === 'paper')) ||
+      (choice === 'lizard' && (computerChoice === 'spock' || computerChoice === 'paper')) ||
+      (choice === 'spock' && (computerChoice === 'rock' || computerChoice === 'scissors'))) {
+    return 'player';
+  } else if (choice === computerChoice) {
+    return 'tie';
   } else {
-    prompt("It's a tie.");
+    return 'computer';
   }
 }
 
-while (true) {
-  prompt(`Choose one: ${VALID_CHOICES.join(', ')}`);
-  let choice = readline.question();
+function displayWinnerMessage(playerPoints, computerPoints) {
+  if (playerPoints > computerPoints) {
+    console.log("==========");
+    console.log("|You win!|");
+    console.log("==========");
+  } else {
+    console.log("===========");
+    console.log("|You lose.|");
+    console.log("===========");
+  }
+}
 
-  while (!VALID_CHOICES.includes(choice)) {
-    prompt("That is not a valid choice");
-    choice = readline.question();
+function displayRoundResults(winner) {
+  if (winner === "tie") {
+    console.log("It's a tie");
+  } else if (winner === 'player') {
+    console.log("You win");
+    playerPoints += 1;
+  } else {
+    console.log("Computer wins");
+    computerPoints += 1;
+  }
+}
+
+function displayStartingMessage() {
+  console.log("*********************");
+  console.log("Best out of 5!");
+  console.log("*********************");
+}
+
+let playerPoints = 0;
+let computerPoints = 0;
+let round = 0;
+
+displayStartingMessage();
+
+
+while (true) {
+  round += 1;
+  console.log("-------");
+  console.log(`Round ${round}`);
+  console.log("-------");
+
+  prompt('Choose one:');
+  for (let i = 0; i < VALID_CHOICES.length; i++) {
+    console.log(`Type ${VALID_INPUTS[i]} for ${VALID_CHOICES[i]}`);
   }
 
+  let input = readline.question();
+
+  let choice = VALID_CHOICES[VALID_INPUTS.indexOf(input)];
+
+  // get player choice
+  while (!VALID_CHOICES.includes(choice)) {
+    prompt("That is not a valid choice");
+    input = readline.question()  
+    choice = VALID_CHOICES[VALID_INPUTS.indexOf(input)];
+  }
+
+  // get computer choice
   let randomIndex = Math.floor(Math.random() * VALID_CHOICES.length);
   let computerChoice = VALID_CHOICES[randomIndex];
 
-  displayWinner(choice, computerChoice);
+  // Winning logic
+  prompt(`You chose ${choice}, computer chose ${computerChoice}.`);
+  let winner = returnWinner(choice, computerChoice);
 
-  prompt('Do you want to play again (y/n)?');
-  let answer = readline.question().toLowerCase();
+  displayRoundResults(winner);
 
-  while (answer[0] !== 'n' && answer[0] !== 'y') {
-    prompt('Please enter "y" or "n".');
-  }
+  console.log(`Player points: ${playerPoints}`);
+  console.log(`Computer points: ${computerPoints}`);
 
-  if (answer[0] !== 'y') break;
+  // Break after someone gets 3 points
+  if (playerPoints > 4 || computerPoints > 4) break;
 }
+
+displayWinnerMessage(playerPoints, computerPoints);
+
