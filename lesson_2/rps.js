@@ -52,6 +52,11 @@ function displayStartingMessage() {
   console.log("*********************");
 }
 
+function getComputerChoice() {
+  let randomIndex = Math.floor(Math.random() * VALID_CHOICES.length);
+  return VALID_CHOICES[randomIndex];
+}
+
 let playerPoints = 0;
 let computerPoints = 0;
 let round = 0;
@@ -74,16 +79,13 @@ while (true) {
 
   let choice = VALID_CHOICES[VALID_INPUTS.indexOf(input)];
 
-  // get player choice
   while (!VALID_CHOICES.includes(choice)) {
     prompt("That is not a valid choice");
     input = readline.question()  
     choice = VALID_CHOICES[VALID_INPUTS.indexOf(input)];
   }
 
-  // get computer choice
-  let randomIndex = Math.floor(Math.random() * VALID_CHOICES.length);
-  let computerChoice = VALID_CHOICES[randomIndex];
+  let computerChoice = getComputerChoice();
 
   // Winning logic
   prompt(`You chose ${choice}, computer chose ${computerChoice}.`);
@@ -94,7 +96,7 @@ while (true) {
   console.log(`Player points: ${playerPoints}`);
   console.log(`Computer points: ${computerPoints}`);
 
-  // Break after someone gets 3 points
+  // Break after someone gets 5 points
   if (playerPoints > 4 || computerPoints > 4) break;
 }
 
