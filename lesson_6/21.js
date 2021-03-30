@@ -7,6 +7,8 @@ const VALUES = ['2', '3', '4', '5', '6',
                 '7', '8', '9', '10', 'J',
                 'Q', 'K', 'A'];
 
+const MIN_BET = 100;
+
 function printCard(num, suit) {
   console.log(`${num} of ${suit}`);
 }
@@ -117,13 +119,16 @@ function checkBust(player) {
   return handTotal(player) > TARGET_VALUE;
 }
 
-function calculateWinner(player, dealer) {
+function calculateWinner(player, dealer, wager) {
   if (checkBust(dealer)) {
     console.log('Dealer busts. You win!');
+    player.money += wager;
   } else if (handTotal(player) > handTotal(dealer) && !checkBust(player)) {
     console.log('You win!');
+    player.money += wager;
   } else {
     console.log('Dealer wins');
+    player.money -= wager;
   }
 }
 
@@ -140,6 +145,11 @@ function deal(player, dealer, deck) {
   drawCard(dealer, deck);
   drawCard(player, deck);
 }
+
+function displayMoney(player) {
+  console.log(`You have $${player.money}`)
+}
+
 
 // Initilaize game
 
@@ -167,10 +177,12 @@ if (!player.name) player.name = "Player";
 
 while (true) {
 
-  if (player.money < 100) {
+  if (player.money < MIN_BET) {
     console.log("You don't have enough money to play :(.")
     break;
   }
+
+  console.clear();
 
   let wager = 0;
 
@@ -182,21 +194,14 @@ while (true) {
 
 
   do {
+    displayMoney(player);
     console.log("What's your wager?");
     wager = parseInt(readline.prompt());
 
     if (wager > player.money) {
-      console.log("You don't have enough money.")
-      wager = false;
+      console.log("You don't have that much money.")
     }
-  } while (isNaN(wager) && wager > player.money)
-
-
-
-
-
-
-
+  } while (isNaN(wager) || wager > player.money)
 
   let deck = createDeck(SUITS, VALUES);
   shuffle(deck);
@@ -226,16 +231,18 @@ while (true) {
   printGameBoard(player, dealer);
 
   if (checkBust(player)) {
-      calculateWinner(player, dealer);
+      calculateWinner(player, dealer, wager);
   } else {
     dealerKeepsHitting(player, dealer, deck);
-    calculateWinner(player, dealer);
+    calculateWinner(player, dealer, wager);
   }
 
   let anotherRound;
 
   do {
+    if (player.money < MIN_BET) break;
     prompt('Play another hand? Yes (y) / No (n)');
+    displayMoney(player);
     anotherRound = readline.question().toLowerCase();
   } while (!['y', 'n'].includes(anotherRound));  
 
@@ -243,4 +250,4 @@ while (true) {
 
 }
 
-console.log(`Thanks for playing, ${player.name}! You go home with ${player.money}`)
+console.log(`Thanks for playing, ${player.name}! You go home with $${player.money}.`)
